@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tes IQ Online</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#eef2f6;--card:#fff;--ink:#14213d;--muted:#5b6780;--line:#c9d3e0;--accent:#2a6f97;--accent-ink:#fff;--mark:#f2c14e;--ok:#2d7a4f;color-scheme:light;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#0f1626;--card:#18233b;--ink:#e8edf6;--muted:#9aa7c0;--line:#2b3a5a;--accent:#6fb3dc;--accent-ink:#0f1626;--mark:#f2c14e;--ok:#6fcf97;color-scheme:dark}}
+:root[data-theme="dark"]{--paper:#0f1626;--card:#18233b;--ink:#e8edf6;--muted:#9aa7c0;--line:#2b3a5a;--accent:#6fb3dc;--accent-ink:#0f1626;--mark:#f2c14e;--ok:#6fcf97;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background-color:var(--paper);background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:28px 28px;background-position:-1px -1px;color:var(--ink);font-family:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.55;min-height:100vh}
+main{max-width:640px;margin:0 auto;padding:24px 16px 48px}
+.sheet{background:var(--card);border:2px solid var(--ink);border-radius:6px;padding:28px 24px;box-shadow:6px 6px 0 var(--ink)}
+h1{font-size:clamp(2rem,7vw,3rem);line-height:1.05;margin:0 0 12px;font-weight:800;letter-spacing:-.02em}
+h2{font-size:1.35rem;line-height:1.3;margin:0 0 20px;font-weight:600}
+p{margin:0 0 14px;max-width:60ch}
+.muted{color:var(--muted);font-size:.92rem}
+ul.rules{padding-left:20px;margin:0 0 22px}
+ul.rules li{margin-bottom:6px}
+button{font:inherit;cursor:pointer}
+.btn{background:var(--accent);color:var(--accent-ink);border:2px solid var(--ink);border-radius:6px;padding:12px 22px;font-weight:600;font-size:1rem}
+.btn:hover{background:var(--mark);color:#14213d}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+button:focus-visible{outline:3px solid var(--mark);outline-offset:2px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;font-weight:600}
+.timer{font-variant-numeric:tabular-nums;border:2px solid var(--ink);border-radius:6px;padding:2px 10px}
+.timer.low{background:var(--mark);color:#14213d}
+.bar{height:8px;background:var(--line);border-radius:4px;margin-bottom:22px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .25s}
+.opts{display:grid;gap:10px;margin-bottom:22px}
+.opt{text-align:left;background:var(--card);color:var(--ink);border:2px solid var(--ink);border-radius:6px;padding:12px 14px;font-size:1rem;display:flex;gap:12px;align-items:center}
+.opt b{display:inline-grid;place-items:center;width:28px;height:28px;border:2px solid var(--ink);border-radius:50%;flex:none;font-size:.85rem}
+.opt:hover{background:var(--paper)}
+.opt.sel{background:var(--accent);color:var(--accent-ink)}
+.opt.sel b{background:var(--mark);color:#14213d}
+.nav{display:flex;justify-content:space-between;gap:10px}
+.hidden{display:none}
+.score{font-size:clamp(4rem,18vw,7rem);font-weight:800;line-height:1;margin:6px 0;letter-spacing:-.03em}
+.meter{position:relative;height:14px;border:2px solid var(--ink);border-radius:7px;margin:26px 0 8px;background:linear-gradient(90deg,var(--line),var(--accent))}
+.meter i{position:absolute;top:-8px;width:6px;height:26px;background:var(--mark);border:2px solid var(--ink);border-radius:3px;transform:translateX(-50%)}
+.scale{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted);margin-bottom:20px}
+.stat{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:18px}
+.stat div{border:2px solid var(--ink);border-radius:6px;padding:8px 14px}
+@media (prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style>
+</head>
+<body>
+<main>
+
+<section class="sheet" id="intro">
+<h1>Tes IQ Online</h1>
+<p>15 soal pilihan ganda tentang pola angka, analogi, dan logika. Waktu pengerjaan 15 menit.</p>
+<ul class="rules">
+<li>Satu jawaban benar untuk setiap soal.</li>
+<li>Kamu bisa kembali ke soal sebelumnya sebelum selesai.</li>
+<li>Waktu habis? Tes langsung dinilai.</li>
+</ul>
+<p class="muted">Tes ini hanya hiburan dan estimasi kasar. Hasilnya tidak setara dengan tes IQ resmi dari psikolog.</p>
+<button class="btn" id="start">Mulai tes</button>
+</section>
+
+<section class="sheet hidden" id="quiz">
+<div class="top"><span id="counter">Soal 1 dari 15</span><span class="timer" id="timer">15:00</span></div>
+<div class="bar"><i id="prog"></i></div>
+<h2 id="q"></h2>
+<div class="opts" id="opts"></div>
+<div class="nav">
+<button class="btn ghost" id="prev">Sebelumnya</button>
+<button class="btn" id="next">Berikutnya</button>
+</div>
+</section>
+
+<section class="sheet hidden" id="result">
+<p class="muted">Estimasi IQ kamu</p>
+<div class="score" id="iq">100</div>
+<h2 id="cat"></h2>
+<div class="meter"><i id="pin"></i></div>
+<div class="scale"><span>70</span><span>100</span><span>130</span><span>145</span></div>
+<div class="stat">
+<div>Benar: <b id="right"></b></div>
+<div>Waktu: <b id="used"></b></div>
+</div>
+<p class="muted">Skor dihitung dari jumlah jawaban benar dan dipetakan ke skala rata-rata 100. Ini bukan hasil tes terstandar, jadi anggap sebagai gambaran umum saja.</p>
+<button class="btn" id="again">Ulangi tes</button>
+</section>
+
+</main>
+<script>
+var BANK=[
+{q:"Lanjutkan pola: 2, 4, 8, 16, ...",o:["24","30","32","36"],a:2},
+{q:"Lanjutkan pola: 3, 6, 11, 18, 27, ...",o:["36","38","40","42"],a:1},
+{q:"Lanjutkan pola: 1, 1, 2, 3, 5, 8, ...",o:["11","12","13","14"],a:2},
+{q:"Panas : Dingin = Siang : ...",o:["Pagi","Malam","Sore","Senja"],a:1},
+{q:"Buku : Membaca = Pisau : ...",o:["Tajam","Memotong","Dapur","Besi"],a:1},
+{q:"Semua kucing adalah hewan. Tom adalah kucing. Maka...",o:["Tom bukan hewan","Tom adalah hewan","Semua hewan adalah kucing","Tidak dapat disimpulkan"],a:1},
+{q:"Mana yang berbeda dari yang lain?",o:["Apel","Jeruk","Wortel","Mangga"],a:2},
+{q:"Jika 5 mesin membuat 5 produk dalam 5 menit, berapa menit yang dibutuhkan 100 mesin untuk membuat 100 produk?",o:["100","50","20","5"],a:3},
+{q:"Ani lebih tinggi dari Budi. Budi lebih tinggi dari Cici. Siapa yang paling tinggi?",o:["Ani","Budi","Cici","Tidak dapat diketahui"],a:0},
+{q:"Lanjutkan pola: 2, 6, 12, 20, 30, ...",o:["40","42","44","48"],a:1},
+{q:"Lanjutkan pola huruf: A, C, F, J, O, ...",o:["S","T","U","V"],a:2},
+{q:"Pada pukul 03.15, berapa derajat sudut antara jarum jam dan jarum menit?",o:["0","7,5","15","30"],a:1},
+{q:"Usia ayah 4 kali usia anaknya. Lima tahun lagi usia ayah menjadi 3 kali usia anak. Berapa usia anak sekarang?",o:["5","8","10","12"],a:2},
+{q:"Lanjutkan pola: 81, 27, 9, 3, ...",o:["0","1","2","6"],a:1},
+{q:"Lanjutkan pola: 4, 9, 16, 25, ...",o:["30","34","36","49"],a:2}
+];
+var LIMIT=15*60, qs=[], ans=[], cur=0, left=LIMIT, tick=null;
+function $(id){return document.getElementById(id)}
+function show(id){["intro","quiz","result"].forEach(function(s){$(s).classList.toggle("hidden",s!==id)});window.scrollTo(0,0)}
+function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function fmt(s){var m=Math.floor(s/60),r=s%60;return (m<10?"0":"")+m+":"+(r<10?"0":"")+r}
+function start(){
+  qs=shuffle(BANK.slice()).map(function(x){
+    var opts=x.o.map(function(t,i){return {t:t,ok:i===x.a}});
+    return {q:x.q,o:shuffle(opts)};
+  });
+  ans=qs.map(function(){return -1});
+  cur=0;left=LIMIT;
+  $("timer").textContent=fmt(left);
+  clearInterval(tick);
+  tick=setInterval(function(){
+    left--;
+    $("timer").textContent=fmt(left);
+    $("timer").classList.toggle("low",left<=60);
+    if(left<=0)finish();
+  },1000);
+  show("quiz");render();
+}
+function render(){
+  var q=qs[cur],L=["A","B","C","D"];
+  $("counter").textContent="Soal "+(cur+1)+" dari "+qs.length;
+  $("prog").style.width=((cur+1)/qs.length*100)+"%";
+  $("q").textContent=q.q;
+  var box=$("opts");box.innerHTML="";
+  q.o.forEach(function(o,i){
+    var b=document.createElement("button");
+    b.className="opt"+(ans[cur]===i?" sel":"");
+    var l=document.createElement("b");l.textContent=L[i];
+    var s=document.createElement("span");s.textContent=o.t;
+    b.appendChild(l);b.appendChild(s);
+    b.onclick=function(){ans[cur]=i;render()};
+    box.appendChild(b);
+  });
+  $("prev").disabled=cur===0;
+  var last=cur===qs.length-1;
+  $("next").textContent=last?"Selesai":"Berikutnya";
+  $("next").disabled=ans[cur]<0;
+}
+function finish(){
+  clearInterval(tick);
+  var n=0;
+  qs.forEach(function(q,i){if(ans[i]>=0&&q.o[ans[i]].ok)n++});
+  var iq=Math.round(100+(n-8)/3.2*15);
+  iq=Math.max(70,Math.min(145,iq));
+  var cat=iq>=130?"Sangat tinggi":iq>=115?"Di atas rata-rata":iq>=90?"Rata-rata":iq>=80?"Di bawah rata-rata":"Perlu latihan lagi";
+  $("iq").textContent=iq;
+  $("cat").textContent=cat;
+  $("right").textContent=n+" dari "+qs.length;
+  $("used").textContent=fmt(LIMIT-Math.max(left,0));
+  $("pin").style.left=((iq-70)/75*100)+"%";
+  show("result");
+}
+$("start").onclick=start;
+$("again").onclick=function(){show("intro")};
+$("prev").onclick=function(){if(cur>0){cur--;render()}};
+$("next").onclick=function(){if(cur<qs.length-1){cur++;render()}else finish()};
+</script>
+</body>
+</html>
